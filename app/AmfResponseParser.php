@@ -34,12 +34,11 @@ class AmfResponseParser
     {
         $resolutions = [];
 
-        // Old format, keep for backwards compatibility
-        $files = Arr::get($response, 'data.flv_files');
+        $files = Arr::get($response, 'data.video_files');
 
         if (empty($files)) {
-            // New format
-            $files = Arr::get($response, 'data.video_files');
+            // Backwards compatibility
+            $files = Arr::get($response, 'data.flv_files');
         }
 
         if (! $files) {
@@ -65,13 +64,13 @@ class AmfResponseParser
 
     protected function getFallback($response)
     {
-        $file = array_get($response, 'data.video_file');
+        $file = Arr::get($response, 'data.video_file');
 
         if (! $file) {
             throw new InvalidArgumentException('Video URL could not be retrieved from Indavideo API.');
         }
 
-        $token = (array) array_get($response, 'data.filesh', []);
+        $token = (array) Arr::get($response, 'data.filesh', []);
         $token = array_shift($token);
 
         if (! $token) {
